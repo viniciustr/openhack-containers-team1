@@ -25,12 +25,16 @@ spec:
           env:
           - name: EULA
             value: "TRUE"
+          volumeMounts:
+          - mountPath: /data
+            name: server-state
+            subPath: {{ .Release.Name }}
           ports:
             - containerPort: 25565
               name: game
             - containerPort: 25575
               name: rcon
-      # volumes:
-      # - name: server-state
-      #   persistentVolumeClaim:
-      #     claimName:  azure-managed-disk
+      volumes:
+      - name: server-state
+        persistentVolumeClaim:
+          claimName: azurefile
