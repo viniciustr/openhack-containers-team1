@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "minecraft-team1.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "minecraft-team1.name" . }}
+    helm.sh/chart: {{ include "minecraft-team1.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "minecraft-team1.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "minecraft-team1.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env:
+          - name: EULA
+            value: "TRUE"
+          ports:
+            - containerPort: 25565
+              name: game
+            - containerPort: 25575
+              name: rcon
+      # volumes:
+      # - name: server-state
+      #   persistentVolumeClaim:
+      #     claimName:  azure-managed-disk
